@@ -1,5 +1,8 @@
 package com.hakademy.remote.client;
 
-public class HelperProcess {
-
+/**
+ * Helper(receiver) process 
+ */
+public class HelperProcess extends Thread{
+	
 }
