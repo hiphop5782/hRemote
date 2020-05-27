@@ -4,6 +4,9 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
 
+import lombok.Data;
+
+@Data
 public class RemoteProcess extends Thread{
 	protected Socket socket;
 	protected DataInputStream in;

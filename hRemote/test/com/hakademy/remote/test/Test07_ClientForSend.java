@@ -21,27 +21,30 @@ public class Test07_ClientForSend {
 		
 		//accept
 		Socket socket = server.accept();
+		DataOutputStream out = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 		
 		//capture screen
 		ScreenManager manager = ScreenManager.getManager();
-		BufferedImage image = manager.getCurrentMonitorImage();
 		
-		//convert to bytebuffer
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		ImageIO.write(image, "jpg", new File("tmp-send.jpg"));//test
-		ImageIO.write(image, "jpg", baos);
-		baos.flush();
-		byte[] buffer = baos.toByteArray();
-		baos.close();
-		System.out.println("compress image size");
-		System.out.println(buffer.length);
-		
-		//send
-		DataOutputStream out = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
-		out.writeInt(buffer.length);
-		out.flush();
-		out.write(buffer);
-		out.flush();
+		for(int i=0; i < 10; i++) {
+			BufferedImage image = manager.getCurrentMonitorImage();
+			
+			//convert to bytebuffer
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ImageIO.write(image, "jpg", new File("tmp-send.jpg"));//test
+			ImageIO.write(image, "jpg", baos);
+			baos.flush();
+			byte[] buffer = baos.toByteArray();
+			baos.close();
+			System.out.println("compress image size");
+			System.out.println(buffer.length);
+			
+			//send
+			out.writeInt(buffer.length);
+			out.flush();
+			out.write(buffer);
+			out.flush();
+		}
 		
 		//server close
 		socket.close();

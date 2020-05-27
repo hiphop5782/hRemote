@@ -22,18 +22,21 @@ public class Test06_ClientForReceive {
 		byte[] buffer = new byte[limit];
 		
 		DataInputStream in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
-		int size = in.readInt();
-		System.out.println("size = " + size);
-		in.readFully(buffer, 0, size);
 		
-		//converting
-		ByteArrayInputStream bais = new ByteArrayInputStream(buffer, 0, size);
-		BufferedImage image = ImageIO.read(bais);
-		
-		//save image
-		ImageIO.write(image, "jpg", new File("tmp-receive.jpg"));
+		while(true) {
+			int size = in.readInt();
+			System.out.println("size = " + size);
+			in.readFully(buffer, 0, size);
+			
+			//converting
+			ByteArrayInputStream bais = new ByteArrayInputStream(buffer, 0, size);
+			BufferedImage image = ImageIO.read(bais);
+			
+			//save image
+			ImageIO.write(image, "jpg", new File("tmp-receive.jpg"));
+		}
 		
 		//socket close
-		socket.close();
+		//socket.close();
 	}
 }

@@ -8,5 +8,9 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/hUtility.jar"/>
+	<classpathentry kind="lib" path="lib/lombok-1.18.8.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-databind-2.11.0.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-core-2.11.0.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-annotations-2.11.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

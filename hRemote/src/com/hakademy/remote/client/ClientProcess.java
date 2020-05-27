@@ -7,26 +7,22 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hakademy.remote.mapper.DataFromClient;
 import com.hakademy.utility.object.annotation.Component;
 import com.hakademy.utility.screen.ScreenManager;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 @Component
+@Data
+@EqualsAndHashCode(callSuper=false)
 public class ClientProcess extends RemoteProcess{
 	private ServerSocket server;
 	
 	private int port, frame;
-	public void setPort(int port) {
-		this.port = port;
-	}
-	public int getPort() {
-		return port;
-	}
-	public void setFrame(int frame) {
-		this.frame = frame;
-	}
-	public int getFrame() {
-		return frame;
-	}
+	private int screen = ScreenManager.MAIN_MONITOR;
 	
 	private ScreenManager manager;
 	
@@ -45,21 +41,30 @@ public class ClientProcess extends RemoteProcess{
 	
 	@Override
 	public void run() {
-		while(liveFlag) {
-			try {
-				send(manager.getCurrentMonitorImageDataAsJpg());
-				
+		try {
+			while(liveFlag) {
+				send(manager.getMonitorImageDataAsJpg(screen));
 				Thread.sleep(1000/frame);
 			}
-			catch(Exception e) {/*send error(skip)*/}
+		}
+		catch(Exception e) {
+			/*send error(skip)*/
+			e.printStackTrace();
+			this.kill();
+			this.interrupt();
 		}
 	}
 	
+	private ObjectMapper mapper = new ObjectMapper();
 	private void send(byte[] data) throws IOException {
-		System.out.println("send = " + data.length);
-		out.write(data.length);
+		DataFromClient d = new DataFromClient();
+		d.setScreenNumber(screen);
+		d.setScreenData(data);
+		d.setMonitorCount(manager.getMonitorCount());
+		byte[] b = mapper.writeValueAsBytes(d);
+		out.writeInt(b.length);
 		out.flush();
-		out.write(data);
+		out.write(b);
 		out.flush();
 	}
 }

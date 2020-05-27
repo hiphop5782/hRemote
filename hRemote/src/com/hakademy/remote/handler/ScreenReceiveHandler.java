@@ -1,7 +1,7 @@
-package com.hakademy.remote.client;
+package com.hakademy.remote.handler;
 
 import java.awt.image.BufferedImage;
 
 public interface ScreenReceiveHandler {
-	void screenReceived(BufferedImage image);
+	void screenReceived(BufferedImage data);
 }

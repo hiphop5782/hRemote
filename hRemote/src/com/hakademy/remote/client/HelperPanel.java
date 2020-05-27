@@ -7,6 +7,8 @@ import java.net.UnknownHostException;
 
 import javax.swing.JPanel;
 
+import com.hakademy.remote.handler.ScreenInformationHandler;
+import com.hakademy.remote.handler.ScreenReceiveHandler;
 import com.hakademy.utility.object.annotation.Component;
 import com.hakademy.utility.object.annotation.Inject;
 
@@ -19,16 +21,20 @@ public class HelperPanel extends JPanel{
 	@Inject
 	private HelperProcess process;
 	
-	private ScreenReceiveHandler handler = image->{
+	private ScreenReceiveHandler imageHandler = image->{
 		draw(image);
+	};
+	private ScreenInformationHandler infoHandler = data->{
+		
 	};
 	
 	public HelperPanel() {}
 	
 	public void connect() throws UnknownHostException, IOException {
-		this.process.setHost("localhost");
-		this.process.setHandler(handler);
-		this.process.setPort(36500);
+//		this.process.setHost("localhost");
+//		this.process.setPort(36500);
+		this.process.setImageHandler(imageHandler);
+		this.process.setInfoHandler(infoHandler);
 		this.process.connect();
 	}
 	
