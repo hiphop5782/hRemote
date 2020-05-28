@@ -43,7 +43,7 @@ public class ClientProcess extends RemoteProcess{
 	public void run() {
 		try {
 			while(liveFlag) {
-				send(manager.getMonitorImageDataAsJpg(screen));
+				send(manager.getMonitorImageDataAsPng(screen));
 				Thread.sleep(1000/frame);
 			}
 		}

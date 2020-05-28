@@ -13,7 +13,7 @@ public class Test08_TestProgramUsingProcessClass2 {
 		InMemoryObjectLoader loader = new InMemoryObjectLoader("com.hakademy.remote");
 		HelperPanel p = loader.getBean(HelperPanel.class);
 		HelperProcess proc = loader.getBean(HelperProcess.class);
-		proc.setHost("localhost");
+		proc.setHost("192.168.0.8");
 		proc.setPort(36500);
 		JFrame fr = new JFrame();
 		fr.setAlwaysOnTop(true);
