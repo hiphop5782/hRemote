@@ -1,5 +1,6 @@
 package com.hakademy.remote.client;
 
+import java.awt.Robot;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
@@ -49,8 +50,13 @@ public class ClientProcess extends RemoteProcess{
 		}
 	};
 	
-	public ClientProcess() throws IOException {
+	private Robot robot;
+	public ClientProcess() {
 		this.manager = ScreenManager.getManager();
+		try {
+			robot = new Robot();
+		}
+		catch(Exception e) {}
 	}
 	
 	public void connect() throws IOException {
@@ -99,7 +105,19 @@ public class ClientProcess extends RemoteProcess{
 		case CHANGE_SCREEN: 
 			this.screen = data.getScreenNumber();
 			break;
+		case MOUSE_CLICK_CONTROL:
+			robot.mousePress(data.getMouseButton());
+			robot.mouseRelease(data.getMouseButton());
+			break;
+		case MOUSE_MOVE_CONTROL:
+			robot.mouseMove(data.getXpos(), data.getYpos());
+			break;
+		case KEYBOARD_CONTROL:
+			robot.keyPress(data.getKeyCode());
+			robot.keyRelease(data.getKeyCode());
+			break;
 		default:
+			break;
 		}
 	}
 }

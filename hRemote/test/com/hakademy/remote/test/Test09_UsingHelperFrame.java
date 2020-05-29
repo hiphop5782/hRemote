@@ -6,6 +6,6 @@ import com.hakademy.remote.client.ui.HelperFrame;
 public class Test09_UsingHelperFrame {
 	public static void main(String[] args) throws Exception {
 		HelperFrame fr = HRemoteApplication.getBean(HelperFrame.class);
-		fr.start();
+		fr.start("192.168.0.8");
 	}
 }
