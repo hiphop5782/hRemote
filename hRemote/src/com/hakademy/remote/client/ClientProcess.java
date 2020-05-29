@@ -1,5 +1,6 @@
 package com.hakademy.remote.client;
 
+import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
@@ -9,6 +10,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
+
+import javax.swing.SwingUtilities;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hakademy.remote.mapper.DataFromClient;
@@ -125,7 +128,10 @@ public class ClientProcess extends RemoteProcess{
 			}
 			break;
 		case MOUSE_MOVE_CONTROL:
-			robot.mouseMove(data.getXpos(), data.getYpos());
+			Rectangle rect = manager.getMonitorRect(screen);
+			int xpos = rect.width * data.getXpos() / data.getWidth();
+			int ypos = rect.height * data.getYpos() / data.getHeight();
+			robot.mouseMove(xpos, ypos);
 			break;
 		case KEYBOARD_CONTROL:
 			robot.keyPress(data.getKeyCode());

@@ -19,5 +19,6 @@ public class DataFromHelper {
 	private int keyCode;
 	private int mouseButton;
 	private int xpos, ypos;
+	private int width, height;
 	private int screenNumber;
 }

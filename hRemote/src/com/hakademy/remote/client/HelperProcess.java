@@ -13,6 +13,8 @@ import java.net.UnknownHostException;
 import javax.imageio.ImageIO;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hakademy.remote.HRemoteApplication;
+import com.hakademy.remote.client.ui.HelperPanel;
 import com.hakademy.remote.command.CommandHeader;
 import com.hakademy.remote.handler.ScreenInformationHandler;
 import com.hakademy.remote.handler.ScreenReceiveHandler;
@@ -62,8 +64,11 @@ public class HelperProcess extends RemoteProcess{
 						.build());
 	}
 	public void sendMouseMoveCommand(int x, int y) throws IOException {
+		HelperPanel panel = HRemoteApplication.getBean(HelperPanel.class);
 		sendData(DataFromHelper.builder()
 							.header(CommandHeader.MOUSE_MOVE_CONTROL)
+							.width(panel.getWidth())
+							.height(panel.getHeight())
 							.xpos(x).ypos(y)
 						.build());
 	}
