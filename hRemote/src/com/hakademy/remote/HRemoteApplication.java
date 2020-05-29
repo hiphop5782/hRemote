@@ -3,15 +3,24 @@ package com.hakademy.remote;
 import com.hakademy.utility.object.InMemoryObjectLoader;
 
 public class HRemoteApplication {
-	public static void main(String[] args) {
+	
+	private static InMemoryObjectLoader loader;
+	public static InMemoryObjectLoader getLoader() {
+		return loader;
+	}
+	public static <T>T getBean(Class<T> type){
+		return loader.getBean(type);
+	}
+	static {
 		try {
-			InMemoryObjectLoader loader = new InMemoryObjectLoader("com.hakademy.remote");
-			
-			System.out.println("Application loading complete");
+			loader = new InMemoryObjectLoader("com.hakademy.remote");
 		}
 		catch(Exception e) {
-			System.err.println("Application Running Error");
 			e.printStackTrace();
 		}
+	}
+	
+	public static void main(String[] args) {
+		
 	}
 }

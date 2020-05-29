@@ -1,4 +1,4 @@
-package com.hakademy.remote.client;
+package com.hakademy.remote.client.ui;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -7,10 +7,13 @@ import java.net.UnknownHostException;
 
 import javax.swing.JPanel;
 
+import com.hakademy.remote.client.HelperProcess;
 import com.hakademy.remote.handler.ScreenInformationHandler;
 import com.hakademy.remote.handler.ScreenReceiveHandler;
 import com.hakademy.utility.object.annotation.Component;
 import com.hakademy.utility.object.annotation.Inject;
+
+import lombok.Getter;
 
 @Component
 public class HelperPanel extends JPanel{
@@ -19,6 +22,7 @@ public class HelperPanel extends JPanel{
 	private BufferedImage image;
 	
 	@Inject
+	@Getter
 	private HelperProcess process;
 	
 	private ScreenReceiveHandler imageHandler = image->{

@@ -4,15 +4,15 @@ import java.io.IOException;
 
 import javax.swing.JFrame;
 
-import com.hakademy.remote.client.HelperPanel;
+import com.hakademy.remote.HRemoteApplication;
 import com.hakademy.remote.client.HelperProcess;
+import com.hakademy.remote.client.ui.HelperPanel;
 import com.hakademy.utility.object.InMemoryObjectLoader;
 
 public class Test08_TestProgramUsingProcessClass2 {
 	public static void main(String[] args) throws IllegalArgumentException, IllegalAccessException, IOException, InterruptedException {
-		InMemoryObjectLoader loader = new InMemoryObjectLoader("com.hakademy.remote");
-		HelperPanel p = loader.getBean(HelperPanel.class);
-		HelperProcess proc = loader.getBean(HelperProcess.class);
+		HelperPanel p = HRemoteApplication.getBean(HelperPanel.class);
+		HelperProcess proc = HRemoteApplication.getBean(HelperProcess.class);
 		proc.setHost("localhost");
 		proc.setPort(36500);
 		JFrame fr = new JFrame();

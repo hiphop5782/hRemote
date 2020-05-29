@@ -52,6 +52,7 @@ public class ClientProcess extends RemoteProcess{
 			e.printStackTrace();
 			this.kill();
 			this.interrupt();
+			System.exit(-1);
 		}
 	}
 	
