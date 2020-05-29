@@ -1,6 +1,8 @@
 package com.hakademy.remote.client;
 
 import java.awt.Robot;
+import java.awt.event.InputEvent;
+import java.awt.event.MouseEvent;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
@@ -51,10 +53,11 @@ public class ClientProcess extends RemoteProcess{
 	};
 	
 	private Robot robot;
-	public ClientProcess() {
+	public ClientProcess() { 
 		this.manager = ScreenManager.getManager();
 		try {
 			robot = new Robot();
+			robot.setAutoDelay(1);
 		}
 		catch(Exception e) {}
 	}
@@ -106,8 +109,20 @@ public class ClientProcess extends RemoteProcess{
 			this.screen = data.getScreenNumber();
 			break;
 		case MOUSE_CLICK_CONTROL:
-			robot.mousePress(data.getMouseButton());
-			robot.mouseRelease(data.getMouseButton());
+			switch(data.getMouseButton()) {
+			case MouseEvent.BUTTON1:
+				robot.mousePress(InputEvent.BUTTON1_MASK);
+				robot.mouseRelease(InputEvent.BUTTON1_MASK);
+				break;
+			case MouseEvent.BUTTON2:
+				robot.mousePress(InputEvent.BUTTON2_MASK);
+				robot.mouseRelease(InputEvent.BUTTON2_MASK);
+				break;
+			case MouseEvent.BUTTON3:
+				robot.mousePress(InputEvent.BUTTON3_MASK);
+				robot.mouseRelease(InputEvent.BUTTON3_MASK);
+				break;
+			}
 			break;
 		case MOUSE_MOVE_CONTROL:
 			robot.mouseMove(data.getXpos(), data.getYpos());

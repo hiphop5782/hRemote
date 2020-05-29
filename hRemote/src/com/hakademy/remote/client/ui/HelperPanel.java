@@ -1,6 +1,11 @@
 package com.hakademy.remote.client.ui;
 
 import java.awt.Graphics;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -35,11 +40,36 @@ public class HelperPanel extends JPanel{
 		menu.setCurrentScreen(data.getScreenNumber());
 	};
 	
+	private MouseListener mListener = new MouseAdapter() {
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			try {
+				process.sendMouseClickCommand(e.getButton());
+			} catch (IOException err) {
+				err.printStackTrace();
+			}
+		}
+	};
+	
+	private MouseMotionListener moListener = new MouseMotionAdapter() {
+		@Override
+		public void mouseMoved(MouseEvent e) {
+			try {
+				process.sendMouseMoveCommand(e.getX(), e.getY());
+			}
+			catch(Exception err) {
+				err.printStackTrace();
+			}
+		}
+	};
+	
 	public HelperPanel() {}
 	
 	public void connect() throws UnknownHostException, IOException {
 //		this.process.setHost("localhost");
 //		this.process.setPort(36500);
+		this.addMouseListener(mListener);
+		this.addMouseMotionListener(moListener);
 		this.process.setImageHandler(imageHandler);
 		this.process.setInfoHandler(infoHandler);
 		this.process.connect();
