@@ -7,7 +7,6 @@ import javax.swing.JFrame;
 import com.hakademy.remote.HRemoteApplication;
 import com.hakademy.remote.client.HelperProcess;
 import com.hakademy.remote.client.ui.HelperPanel;
-import com.hakademy.utility.object.InMemoryObjectLoader;
 
 public class Test08_TestProgramUsingProcessClass2 {
 	public static void main(String[] args) throws IllegalArgumentException, IllegalAccessException, IOException, InterruptedException {
