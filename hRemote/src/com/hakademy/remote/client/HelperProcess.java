@@ -49,7 +49,10 @@ public class HelperProcess extends RemoteProcess{
 	private ScreenInformationHandler infoHandler;
 	
 	public void sendData(DataFromHelper data) throws IOException{
-		out.write(writeMapper.writeValueAsBytes(data));
+		byte[] b = writeMapper.writeValueAsBytes(data);
+		out.writeInt(b.length);
+		out.flush();
+		out.write(b);
 		out.flush();
 	}
 	public void sendKeyboardCommand(int keyCode) throws IOException {
@@ -100,6 +103,10 @@ public class HelperProcess extends RemoteProcess{
 				//send to handler if exist
 				if(imageHandler != null) {
 					imageHandler.screenReceived(image);
+				}
+				
+				if(infoHandler != null) {
+					infoHandler.informationReceived(data);
 				}
 				
 			}

@@ -7,6 +7,7 @@ import java.net.UnknownHostException;
 
 import javax.swing.JPanel;
 
+import com.hakademy.remote.HRemoteApplication;
 import com.hakademy.remote.client.HelperProcess;
 import com.hakademy.remote.handler.ScreenInformationHandler;
 import com.hakademy.remote.handler.ScreenReceiveHandler;
@@ -29,7 +30,9 @@ public class HelperPanel extends JPanel{
 		draw(image);
 	};
 	private ScreenInformationHandler infoHandler = data->{
-		
+		HelperMenu menu = HRemoteApplication.getBean(HelperMenu.class);
+		menu.setScreenSize(data.getMonitorCount());
+		menu.setCurrentScreen(data.getScreenNumber());
 	};
 	
 	public HelperPanel() {}

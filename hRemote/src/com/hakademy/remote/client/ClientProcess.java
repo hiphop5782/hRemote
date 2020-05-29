@@ -9,6 +9,7 @@ import java.net.ServerSocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hakademy.remote.mapper.DataFromClient;
+import com.hakademy.remote.mapper.DataFromHelper;
 import com.hakademy.utility.object.annotation.Component;
 import com.hakademy.utility.screen.ScreenManager;
 
@@ -25,6 +26,28 @@ public class ClientProcess extends RemoteProcess{
 	private int screen = ScreenManager.MAIN_MONITOR;
 	
 	private ScreenManager manager;
+
+	private byte[] buffer = new byte[100 * 1024];
+	
+	private ObjectMapper readMapper = new ObjectMapper();
+	private ObjectMapper writeMapper = new ObjectMapper();
+	
+	private Thread receiver;
+	private Runnable receiveAction = ()->{
+		while(liveFlag) {
+			try {
+				int size = in.readInt();
+				in.readFully(buffer, 0, size);
+				
+				//convert
+				DataFromHelper data = readMapper.readValue(buffer, DataFromHelper.class);
+				doSomething(data);
+			}
+			catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+	};
 	
 	public ClientProcess() throws IOException {
 		this.manager = ScreenManager.getManager();
@@ -35,6 +58,9 @@ public class ClientProcess extends RemoteProcess{
 		this.socket = server.accept();
 		this.out = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 		this.in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+		this.receiver = new Thread(receiveAction);
+		this.receiver.setDaemon(true);
+		this.receiver.start();
 		this.setDaemon(true);
 		this.start();
 	}
@@ -56,16 +82,24 @@ public class ClientProcess extends RemoteProcess{
 		}
 	}
 	
-	private ObjectMapper mapper = new ObjectMapper();
 	private void send(byte[] data) throws IOException {
 		DataFromClient d = new DataFromClient();
 		d.setScreenNumber(screen);
 		d.setScreenData(data);
 		d.setMonitorCount(manager.getMonitorCount());
-		byte[] b = mapper.writeValueAsBytes(d);
+		byte[] b = writeMapper.writeValueAsBytes(d);
 		out.writeInt(b.length);
 		out.flush();
 		out.write(b);
 		out.flush();
+	}
+	
+	private void doSomething(DataFromHelper data) {
+		switch(data.getHeader()) {
+		case CHANGE_SCREEN: 
+			this.screen = data.getScreenNumber();
+			break;
+		default:
+		}
 	}
 }
