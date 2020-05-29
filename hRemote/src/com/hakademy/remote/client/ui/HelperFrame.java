@@ -26,12 +26,16 @@ public class HelperFrame extends JFrame{
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	
-	public void start() throws IOException {
+	public void start(String host) throws IOException {
+		start(host, 36500);
+	}
+	
+	public void start(String host, int port) throws IOException {
 		setContentPane(panel);
 		setJMenuBar(menu);
 		setVisible(true);
-		panel.getProcess().setHost("localhost");
-		panel.getProcess().setPort(36500);
+		panel.getProcess().setHost(host);
+		panel.getProcess().setPort(port);
 		panel.connect();
 	}
 	
