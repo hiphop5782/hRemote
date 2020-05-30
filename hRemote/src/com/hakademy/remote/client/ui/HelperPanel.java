@@ -64,15 +64,15 @@ public class HelperPanel extends JPanel{
 	
 	private KeyListener kListener = new KeyAdapter() {
 		public void keyPressed(KeyEvent e) {
-			System.out.println("keyPressed = " + e.getExtendedKeyCode());
-			process.sendKeyboardPressCommand(e.getExtendedKeyCode());
+//			System.out.println("keyPressed = " + e.getExtendedKeyCode());
+//			process.sendKeyboardPressCommand(e.getExtendedKeyCode());
 		}
 		public void keyReleased(KeyEvent e) {
-			System.out.println("keyReleased = " + e.getExtendedKeyCode());
-			process.sendKeyboardReleaseCommand(e.getExtendedKeyCode());
+//			System.out.println("keyReleased = " + e.getExtendedKeyCode());
+//			process.sendKeyboardReleaseCommand(e.getExtendedKeyCode());
 		}
 		public void keyTyped(KeyEvent e) {
-			System.out.println("keyTyped = " + e.getExtendedKeyCode());
+//			System.out.println("keyTyped = " + e.getExtendedKeyCode());
 //			process.sendKeyboardTypeCommand(e.getExtendedKeyCode());
 		}
 	};
@@ -95,7 +95,7 @@ public class HelperPanel extends JPanel{
 //		this.process.setPort(36500);
 		this.addMouseListener(mListener);
 		this.addMouseMotionListener(moListener);
-		frame.addKeyListener(kListener);
+//		frame.addKeyListener(kListener);
 		this.process.setImageHandler(imageHandler);
 		this.process.setInfoHandler(infoHandler);
 		this.process.connect();

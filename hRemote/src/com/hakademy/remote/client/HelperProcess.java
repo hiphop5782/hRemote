@@ -13,7 +13,6 @@ import java.net.UnknownHostException;
 import javax.imageio.ImageIO;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hakademy.remote.HRemoteApplication;
 import com.hakademy.remote.client.ui.HelperMenu;
 import com.hakademy.remote.client.ui.HelperPanel;
 import com.hakademy.remote.command.CommandHeader;
@@ -22,12 +21,14 @@ import com.hakademy.remote.handler.ScreenReceiveHandler;
 import com.hakademy.remote.log.LogManager;
 import com.hakademy.remote.mapper.DataFromClient;
 import com.hakademy.remote.mapper.DataFromHelper;
+import com.hakademy.utility.hook.KeyboardHook;
 import com.hakademy.utility.object.annotation.Component;
 import com.hakademy.utility.object.annotation.Inject;
+import com.sun.jna.platform.win32.WinUser.LowLevelKeyboardProc;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.extern.slf4j.Slf4j;
+import lombok.Getter;
 
 /**
  * Helper(receiver) process 
@@ -40,6 +41,20 @@ public class HelperProcess extends RemoteProcess{
 	private int port;
 	private int limit = 10 * 1024 * 1024;//1MB
 	private byte[] buffer = new byte[limit];
+	
+	@Getter
+	private KeyboardHook keyHook = KeyboardHook.getInstance();
+	private LowLevelKeyboardProc keyProc = (nCode, wParam, info)-> {
+//		System.out.println("global key detection. nCode = " + nCode+", wParam = "+wParam + ", info = "+info);
+//		System.out.println("keyCode = " + info.vkCode);
+		if(wParam.intValue() == KeyboardHook.KEY_PRESS) {
+			sendKeyboardPressCommand(info.vkCode);
+		}
+		else if(wParam.intValue() == KeyboardHook.KEY_RELEASE){
+			sendKeyboardReleaseCommand(info.vkCode);
+		}
+		return null;
+	};
 	
 	@Inject
 	private HelperMenu menu;
@@ -54,6 +69,7 @@ public class HelperProcess extends RemoteProcess{
 		this.out = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 		this.in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
 		this.setDaemon(true);
+		this.keyHook.setGlobalProcess(keyProc);
 		this.start();
 	}
 	

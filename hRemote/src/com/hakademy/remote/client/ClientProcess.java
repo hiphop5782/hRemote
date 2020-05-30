@@ -14,6 +14,7 @@ import java.net.ServerSocket;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hakademy.remote.mapper.DataFromClient;
 import com.hakademy.remote.mapper.DataFromHelper;
+import com.hakademy.utility.hook.KeyboardHook;
 import com.hakademy.utility.object.annotation.Component;
 import com.hakademy.utility.screen.ScreenManager;
 
@@ -132,17 +133,17 @@ public class ClientProcess extends RemoteProcess{
 		this.screen = data.getScreenNumber();
 	}
 
+	private KeyboardHook hook = KeyboardHook.getInstance();
 	private void keyboardTypeAction(DataFromHelper data) {
-		keyboardPressAction(data);
-		keyboardReleaseAction(data);
+		hook.keyType(data.getKeyCode());
 	}
 	
 	private void keyboardReleaseAction(DataFromHelper data) {
-		robot.keyRelease(data.getKeyCode());
+		hook.keyPress(data.getKeyCode());
 	}
 	
 	private void keyboardPressAction(DataFromHelper data) {
-		robot.keyPress(data.getKeyCode());
+		hook.keyRelease(data.getKeyCode());
 	}
 	
 	private void mouseMoveAction(DataFromHelper data) {
