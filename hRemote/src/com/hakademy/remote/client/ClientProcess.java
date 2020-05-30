@@ -11,8 +11,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 
-import javax.swing.SwingUtilities;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hakademy.remote.mapper.DataFromClient;
 import com.hakademy.remote.mapper.DataFromHelper;
@@ -109,36 +107,78 @@ public class ClientProcess extends RemoteProcess{
 	private void doSomething(DataFromHelper data) {
 		switch(data.getHeader()) {
 		case CHANGE_SCREEN: 
-			this.screen = data.getScreenNumber();
+			changeScreenAction(data);
 			break;
+		case MOUSE_PRESS_CONTROL:
+			mousePressAction(data); break;
+		case MOUSE_RELEASE_CONTROL:
+			mouseReleaseAction(data); break;
 		case MOUSE_CLICK_CONTROL:
-			switch(data.getMouseButton()) {
-			case MouseEvent.BUTTON1:
-				robot.mousePress(InputEvent.BUTTON1_MASK);
-				robot.mouseRelease(InputEvent.BUTTON1_MASK);
-				break;
-			case MouseEvent.BUTTON2:
-				robot.mousePress(InputEvent.BUTTON2_MASK);
-				robot.mouseRelease(InputEvent.BUTTON2_MASK);
-				break;
-			case MouseEvent.BUTTON3:
-				robot.mousePress(InputEvent.BUTTON3_MASK);
-				robot.mouseRelease(InputEvent.BUTTON3_MASK);
-				break;
-			}
-			break;
+			mouseClickAction(data); break;
 		case MOUSE_MOVE_CONTROL:
-			Rectangle rect = manager.getMonitorRect(screen);
-			int xpos = rect.width * data.getXpos() / data.getWidth();
-			int ypos = rect.height * data.getYpos() / data.getHeight();
-			robot.mouseMove(xpos, ypos);
-			break;
-		case KEYBOARD_CONTROL:
-			robot.keyPress(data.getKeyCode());
-			robot.keyRelease(data.getKeyCode());
-			break;
+			mouseMoveAction(data); break;
+		case KEYBOARD_PRESS_CONTROL:
+			keyboardPressAction(data); break;
+		case KEYBOARD_RELEASE_CONTROL:
+			keyboardReleaseAction(data); break;
+		case KEYBOARD_TYPE_CONTROL:
+			keyboardTypeAction(data); break;
 		default:
 			break;
 		}
+	}
+	
+	private void changeScreenAction(DataFromHelper data) {
+		this.screen = data.getScreenNumber();
+	}
+
+	private void keyboardTypeAction(DataFromHelper data) {
+		keyboardPressAction(data);
+		keyboardReleaseAction(data);
+	}
+	
+	private void keyboardReleaseAction(DataFromHelper data) {
+		robot.keyRelease(data.getKeyCode());
+	}
+	
+	private void keyboardPressAction(DataFromHelper data) {
+		robot.keyPress(data.getKeyCode());
+	}
+	
+	private void mouseMoveAction(DataFromHelper data) {
+		Rectangle rect = manager.getMonitorRect(screen);
+		int xpos = rect.width * data.getXpos() / data.getWidth();
+		int ypos = rect.height * data.getYpos() / data.getHeight();
+		robot.mouseMove(xpos, ypos);
+	}
+	
+	private void mousePressAction(DataFromHelper data) {
+		switch(data.getMouseButton()) {
+		case MouseEvent.BUTTON1:
+			robot.mousePress(InputEvent.BUTTON1_MASK);		break;
+		case MouseEvent.BUTTON2:
+			robot.mousePress(InputEvent.BUTTON2_MASK);		break;
+		case MouseEvent.BUTTON3:
+			robot.mousePress(InputEvent.BUTTON3_MASK);		break;
+		}
+	}
+	
+	private void mouseReleaseAction(DataFromHelper data) {
+		switch(data.getMouseButton()) {
+		case MouseEvent.BUTTON1:
+			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+			break;
+		case MouseEvent.BUTTON2:
+			robot.mouseRelease(InputEvent.BUTTON2_MASK);
+			break;
+		case MouseEvent.BUTTON3:
+			robot.mouseRelease(InputEvent.BUTTON3_MASK);
+			break;
+		}
+	}
+	
+	private void mouseClickAction(DataFromHelper data) {
+		mousePressAction(data);
+		mouseReleaseAction(data);
 	}
 }

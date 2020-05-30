@@ -14,16 +14,20 @@ import javax.imageio.ImageIO;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hakademy.remote.HRemoteApplication;
+import com.hakademy.remote.client.ui.HelperMenu;
 import com.hakademy.remote.client.ui.HelperPanel;
 import com.hakademy.remote.command.CommandHeader;
 import com.hakademy.remote.handler.ScreenInformationHandler;
 import com.hakademy.remote.handler.ScreenReceiveHandler;
+import com.hakademy.remote.log.LogManager;
 import com.hakademy.remote.mapper.DataFromClient;
 import com.hakademy.remote.mapper.DataFromHelper;
 import com.hakademy.utility.object.annotation.Component;
+import com.hakademy.utility.object.annotation.Inject;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Helper(receiver) process 
@@ -36,6 +40,12 @@ public class HelperProcess extends RemoteProcess{
 	private int port;
 	private int limit = 10 * 1024 * 1024;//1MB
 	private byte[] buffer = new byte[limit];
+	
+	@Inject
+	private HelperMenu menu;
+	
+	@Inject
+	private HelperPanel panel;
 	
 	public HelperProcess() {}
 	
@@ -50,39 +60,67 @@ public class HelperProcess extends RemoteProcess{
 	private ScreenReceiveHandler imageHandler;
 	private ScreenInformationHandler infoHandler;
 	
-	public void sendData(DataFromHelper data) throws IOException{
-		byte[] b = writeMapper.writeValueAsBytes(data);
-		out.writeInt(b.length);
-		out.flush();
-		out.write(b);
-		out.flush();
+	public void sendData(DataFromHelper data) {
+		try {
+			byte[] b = writeMapper.writeValueAsBytes(data);
+			out.writeInt(b.length);
+			out.flush();
+			out.write(b);
+			out.flush();
+		}
+		catch(IOException e) {
+			LogManager.error("명령 전송 오류", e);
+		}
 	}
-	public void sendKeyboardCommand(int keyCode) throws IOException {
+	public void sendKeyboardCommand(int keyCode)  {
 		sendData(DataFromHelper.builder()
-							.header(CommandHeader.KEYBOARD_CONTROL)
-							.keyCode(keyCode)
-						.build());
+				.header(CommandHeader.KEYBOARD_TYPE_CONTROL)
+				.keyCode(keyCode)
+				.build());
 	}
-	public void sendMouseMoveCommand(int x, int y) throws IOException {
-		HelperPanel panel = HRemoteApplication.getBean(HelperPanel.class);
+	public void sendKeyboardPressCommand(int keyCode) {
 		sendData(DataFromHelper.builder()
-							.header(CommandHeader.MOUSE_MOVE_CONTROL)
-							.width(panel.getWidth())
-							.height(panel.getHeight())
-							.xpos(x).ypos(y)
-						.build());
+				.header(CommandHeader.KEYBOARD_PRESS_CONTROL)
+				.keyCode(keyCode)
+				.build());
 	}
-	public void sendMouseClickCommand(int button) throws IOException {
+	public void sendKeyboardReleaseCommand(int keyCode) {
 		sendData(DataFromHelper.builder()
-							.header(CommandHeader.MOUSE_CLICK_CONTROL)
-							.mouseButton(button)
-						.build());	
+				.header(CommandHeader.KEYBOARD_RELEASE_CONTROL)
+				.keyCode(keyCode)
+				.build());
+	}
+	public void sendMousePressCommand(int button) {
+		sendData(DataFromHelper.builder()
+				.header(CommandHeader.MOUSE_PRESS_CONTROL)
+				.mouseButton(button)
+				.build());	
+	}
+	public void sendMouseReleaseCommand(int button) {
+		sendData(DataFromHelper.builder()
+				.header(CommandHeader.MOUSE_RELEASE_CONTROL)
+				.mouseButton(button)
+				.build());
+	}
+	public void sendMouseMoveCommand(int x, int y) {
+		sendData(DataFromHelper.builder()
+						.header(CommandHeader.MOUSE_MOVE_CONTROL)
+						.width(panel.getWidth())
+						.height(panel.getHeight())
+						.xpos(x).ypos(y)
+					.build());
+	}
+	public void sendMouseClickCommand(int button) {
+		sendData(DataFromHelper.builder()
+				.header(CommandHeader.MOUSE_CLICK_CONTROL)
+				.mouseButton(button)
+			.build());	
 	}
 	public void sendChangeScreenCommand(int screen) throws IOException {
 		sendData(DataFromHelper.builder()
-							.header(CommandHeader.CHANGE_SCREEN)
-							.screenNumber(screen)
-						.build());
+						.header(CommandHeader.CHANGE_SCREEN)
+						.screenNumber(screen)
+					.build());
 	}
 	
 	private ObjectMapper readMapper = new ObjectMapper();

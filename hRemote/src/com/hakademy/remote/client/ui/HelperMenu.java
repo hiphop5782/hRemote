@@ -14,6 +14,7 @@ import javax.swing.JRadioButtonMenuItem;
 import com.hakademy.remote.HRemoteApplication;
 import com.hakademy.remote.client.HelperProcess;
 import com.hakademy.utility.object.annotation.Component;
+import com.hakademy.utility.object.annotation.Inject;
 
 @Component
 public class HelperMenu extends JMenuBar{
@@ -21,10 +22,13 @@ public class HelperMenu extends JMenuBar{
 	private JMenu screenMenu = new JMenu("화면");
 	private List<JMenuItem> screenMenuItems = new ArrayList<>();
 	
+	@Inject
+	private HelperProcess process;
+	
 	private ActionListener sendAction = e->{
 		int index = screenMenuItems.indexOf(e.getSource());
 		try {
-			HRemoteApplication.getBean(HelperProcess.class).sendChangeScreenCommand(index);
+			process.sendChangeScreenCommand(index);
 		} catch (IOException err) {
 			err.printStackTrace();
 		}
