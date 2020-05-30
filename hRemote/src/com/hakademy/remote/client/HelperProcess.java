@@ -48,7 +48,6 @@ public class HelperProcess extends RemoteProcess{
 	private LowLevelKeyboardProc keyProc = (nCode, wParam, info)-> {
 //		System.out.println("global key detection. nCode = " + nCode+", wParam = "+wParam + ", info = "+info);
 //		System.out.println("keyCode = " + info.vkCode);
-		System.out.println(User32.INSTANCE.GetAsyncKeyState(User32.VK_LCONTROL));
 		switch(wParam.intValue()) {
 		case KeyboardHook.KEY_PRESS:
 		case KeyboardHook.SYSKEY_PRESS:
@@ -99,12 +98,14 @@ public class HelperProcess extends RemoteProcess{
 				.build());
 	}
 	public void sendKeyboardPressCommand(int keyCode) {
+		LogManager.info("send press = "+keyCode);
 		sendData(DataFromHelper.builder()
 				.header(CommandHeader.KEYBOARD_PRESS_CONTROL)
 				.keyCode(keyCode)
 				.build());
 	}
 	public void sendKeyboardReleaseCommand(int keyCode) {
+		LogManager.info("send release = "+keyCode);
 		sendData(DataFromHelper.builder()
 				.header(CommandHeader.KEYBOARD_RELEASE_CONTROL)
 				.keyCode(keyCode)

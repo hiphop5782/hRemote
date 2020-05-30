@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hakademy.remote.log.LogManager;
 import com.hakademy.remote.mapper.DataFromClient;
 import com.hakademy.remote.mapper.DataFromHelper;
 import com.hakademy.utility.hook.KeyboardHook;
@@ -135,14 +136,17 @@ public class ClientProcess extends RemoteProcess{
 
 	private KeyboardHook hook = KeyboardHook.getInstance();
 	private void keyboardTypeAction(DataFromHelper data) {
+		LogManager.info("receive typed = " + data.getKeyCode());
 		hook.keyType(data.getKeyCode());
 	}
 	
 	private void keyboardReleaseAction(DataFromHelper data) {
+		LogManager.info("receive release = " + data.getKeyCode());
 		hook.keyPress(data.getKeyCode());
 	}
 	
 	private void keyboardPressAction(DataFromHelper data) {
+		LogManager.info("receive press = " + data.getKeyCode());
 		hook.keyRelease(data.getKeyCode());
 	}
 	
