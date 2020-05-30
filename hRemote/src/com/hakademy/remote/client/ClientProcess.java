@@ -106,6 +106,7 @@ public class ClientProcess extends RemoteProcess{
 	}
 	
 	private void doSomething(DataFromHelper data) {
+		System.out.println(data);
 		switch(data.getHeader()) {
 		case CHANGE_SCREEN: 
 			changeScreenAction(data);

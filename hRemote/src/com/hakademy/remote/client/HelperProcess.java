@@ -46,7 +46,7 @@ public class HelperProcess extends RemoteProcess{
 	private KeyboardHook keyHook = KeyboardHook.getInstance();
 	private LowLevelKeyboardProc keyProc = (nCode, wParam, info)-> {
 //		System.out.println("global key detection. nCode = " + nCode+", wParam = "+wParam + ", info = "+info);
-//		System.out.println("keyCode = " + info.vkCode);
+		System.out.println("keyCode = " + info.vkCode);
 		if(wParam.intValue() == KeyboardHook.KEY_PRESS) {
 			sendKeyboardPressCommand(info.vkCode);
 		}
@@ -144,8 +144,8 @@ public class HelperProcess extends RemoteProcess{
 	
 	@Override
 	public void run() {
-		while(liveFlag) {
-			try {
+		try {
+			while(liveFlag) {
 				//read size and data
 				int size = in.readInt();
 				in.readFully(buffer, 0, size);
@@ -169,10 +169,10 @@ public class HelperProcess extends RemoteProcess{
 				}
 				
 			}
-			catch(Exception e) {
-				/*receive error(skip) */
-				e.printStackTrace();
-			}
+		}
+		catch(Exception e) {
+			/*receive error(skip) */
+			e.printStackTrace();
 		}
 	}
 	
