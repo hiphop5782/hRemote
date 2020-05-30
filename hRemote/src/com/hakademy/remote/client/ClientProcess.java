@@ -107,27 +107,31 @@ public class ClientProcess extends RemoteProcess{
 	}
 	
 	private void doSomething(DataFromHelper data) {
-		switch(data.getHeader()) {
-		case CHANGE_SCREEN: 
-			changeScreenAction(data);
-			break;
-		case MOUSE_PRESS_CONTROL:
-			mousePressAction(data); break;
-		case MOUSE_RELEASE_CONTROL:
-			mouseReleaseAction(data); break;
-		case MOUSE_CLICK_CONTROL:
-			mouseClickAction(data); break;
-		case MOUSE_MOVE_CONTROL:
-			mouseMoveAction(data); break;
-		case KEYBOARD_PRESS_CONTROL:
-			keyboardPressAction(data); break;
-		case KEYBOARD_RELEASE_CONTROL:
-			keyboardReleaseAction(data); break;
-		case KEYBOARD_TYPE_CONTROL:
-			keyboardTypeAction(data); break;
-		default:
-			break;
-		}
+		Thread t = new Thread(()->{
+			switch(data.getHeader()) {
+			case CHANGE_SCREEN: 
+				changeScreenAction(data);
+				break;
+			case MOUSE_PRESS_CONTROL:
+				mousePressAction(data); break;
+			case MOUSE_RELEASE_CONTROL:
+				mouseReleaseAction(data); break;
+			case MOUSE_CLICK_CONTROL:
+				mouseClickAction(data); break;
+			case MOUSE_MOVE_CONTROL:
+				mouseMoveAction(data); break;
+			case KEYBOARD_PRESS_CONTROL:
+				keyboardPressAction(data); break;
+			case KEYBOARD_RELEASE_CONTROL:
+				keyboardReleaseAction(data); break;
+			case KEYBOARD_TYPE_CONTROL:
+				keyboardTypeAction(data); break;
+			default:
+				break;
+			}
+		});
+		t.setDaemon(true);
+		t.start();
 	}
 	
 	private void changeScreenAction(DataFromHelper data) {
