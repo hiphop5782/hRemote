@@ -7,5 +7,6 @@ public class Test09_UsingHelperFrame {
 	public static void main(String[] args) throws Exception {
 		HelperFrame fr = HRemoteApplication.getBean(HelperFrame.class);
 		fr.start("192.168.0.8");
+//		fr.start("localhost");
 	}
 }

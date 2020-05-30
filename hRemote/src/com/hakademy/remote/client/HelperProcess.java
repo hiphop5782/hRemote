@@ -24,6 +24,7 @@ import com.hakademy.remote.mapper.DataFromHelper;
 import com.hakademy.utility.hook.KeyboardHook;
 import com.hakademy.utility.object.annotation.Component;
 import com.hakademy.utility.object.annotation.Inject;
+import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinUser.LowLevelKeyboardProc;
 
 import lombok.Data;
@@ -46,12 +47,15 @@ public class HelperProcess extends RemoteProcess{
 	private KeyboardHook keyHook = KeyboardHook.getInstance();
 	private LowLevelKeyboardProc keyProc = (nCode, wParam, info)-> {
 //		System.out.println("global key detection. nCode = " + nCode+", wParam = "+wParam + ", info = "+info);
-		System.out.println("keyCode = " + info.vkCode);
-		if(wParam.intValue() == KeyboardHook.KEY_PRESS) {
-			sendKeyboardPressCommand(info.vkCode);
-		}
-		else if(wParam.intValue() == KeyboardHook.KEY_RELEASE){
-			sendKeyboardReleaseCommand(info.vkCode);
+//		System.out.println("keyCode = " + info.vkCode);
+		System.out.println(User32.INSTANCE.GetAsyncKeyState(User32.VK_LCONTROL));
+		switch(wParam.intValue()) {
+		case KeyboardHook.KEY_PRESS:
+		case KeyboardHook.SYSKEY_PRESS:
+			sendKeyboardPressCommand(info.vkCode); break;
+		case KeyboardHook.KEY_RELEASE:
+		case KeyboardHook.SYSKEY_RELEASE:
+			sendKeyboardReleaseCommand(info.vkCode); break;
 		}
 		return null;
 	};
