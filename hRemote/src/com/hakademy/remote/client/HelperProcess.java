@@ -72,7 +72,7 @@ public class HelperProcess extends RemoteProcess{
 			LogManager.error("명령 전송 오류", e);
 		}
 	}
-	public void sendKeyboardCommand(int keyCode)  {
+	public void sendKeyboardTypeCommand(int keyCode)  {
 		sendData(DataFromHelper.builder()
 				.header(CommandHeader.KEYBOARD_TYPE_CONTROL)
 				.keyCode(keyCode)

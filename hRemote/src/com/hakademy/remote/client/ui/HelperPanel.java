@@ -58,13 +58,22 @@ public class HelperPanel extends JPanel{
 		}
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			process.sendMouseClickCommand(e.getButton());
+//			process.sendMouseClickCommand(e.getButton());
 		}
 	};
 	
 	private KeyListener kListener = new KeyAdapter() {
 		public void keyPressed(KeyEvent e) {
-			process.sendKeyboardCommand(e.getExtendedKeyCode());
+			System.out.println("keyPressed = " + e.getExtendedKeyCode());
+			process.sendKeyboardPressCommand(e.getExtendedKeyCode());
+		}
+		public void keyReleased(KeyEvent e) {
+			System.out.println("keyReleased = " + e.getExtendedKeyCode());
+			process.sendKeyboardReleaseCommand(e.getExtendedKeyCode());
+		}
+		public void keyTyped(KeyEvent e) {
+			System.out.println("keyTyped = " + e.getExtendedKeyCode());
+//			process.sendKeyboardTypeCommand(e.getExtendedKeyCode());
 		}
 	};
 	
