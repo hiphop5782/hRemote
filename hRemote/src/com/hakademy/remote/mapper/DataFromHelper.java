@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 public class DataFromHelper {
 	private CommandHeader header;
 	private int keyCode;
+	private int[] keyMask;
 	private int mouseButton;
 	private int xpos, ypos;
 	private int width, height;
