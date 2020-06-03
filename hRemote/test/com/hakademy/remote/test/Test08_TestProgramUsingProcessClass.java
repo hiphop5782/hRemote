@@ -12,7 +12,7 @@ public class Test08_TestProgramUsingProcessClass {
 		cp.setPort(36500);
 		cp.setFrame(30);
 		cp.connect();
-		
+	
 		Thread.currentThread().join();
 	}
 }
