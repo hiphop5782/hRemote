@@ -19,7 +19,12 @@ public class Test12_Simplified_JNA_Press_Test {
 //		Keyboard.sendKeyUp(162);
 		
 //		alt
-		Keyboard.sendKeyDown(164);
-		Keyboard.sendKeyUp(164);
+//		Keyboard.sendKeyDown(164);
+//		Keyboard.sendKeyUp(164);
+		
+//		clear
+		for(int i=0; i < 256; i++) {
+			Keyboard.sendKeyUp(i);
+		}
 	}
 }

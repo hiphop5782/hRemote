@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.net.Socket;
 
 import lombok.Data;
+import me.coley.simplejna.Keyboard;
 
 @Data
 public class RemoteProcess extends Thread{
@@ -20,6 +21,11 @@ public class RemoteProcess extends Thread{
 	
 	public void kill() {
 		this.liveFlag = false;
+		
+		//keyboard clear
+		for(int i=0; i < 256; i++) {
+			Keyboard.sendKeyUp(i);
+		}
 	}
 	
 }
