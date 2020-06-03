@@ -6,7 +6,7 @@ import com.hakademy.remote.HRemoteApplication;
 import com.hakademy.remote.client.ClientProcess;
 import com.hakademy.utility.object.InMemoryObjectLoader;
 
-public class Test08_TestProgramUsingProcessClass {
+public class Test08_TestProgramForClient {
 	public static void main(String[] args) throws InterruptedException, IllegalArgumentException, IllegalAccessException, IOException {
 		ClientProcess cp = HRemoteApplication.getBean(ClientProcess.class);
 		cp.setPort(36500);
