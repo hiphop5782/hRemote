@@ -47,6 +47,17 @@ public class HelperProcess extends RemoteProcess{
 	private int limit = 10 * 1024 * 1024;//1MB
 	private byte[] buffer = new byte[limit];
 	
+	private boolean preventFlag = false;
+	public void enablePrevent() {
+		preventFlag = true;
+	}
+	public void disablePrevent() {
+		preventFlag = false;
+	}
+	public boolean isPrevent() {
+		return preventFlag;
+	}
+	
 	private KeyHookManager manager = new KeyHookManager();
 	private KeyEventReceiver receiver = new KeyEventReceiver(manager) {
 		@Override
@@ -57,15 +68,17 @@ public class HelperProcess extends RemoteProcess{
 			else if(pressState == PressState.UP){
 				sendKeyboardReleaseCommand(vkCode);
 			}
-			return false;
+			return preventFlag;
 		}
 	};
 	
 	public void startHook() {
+		enablePrevent();
 		manager.hook(receiver);
 	}
 	public void stopHook() {
 		manager.unhook(receiver);
+		disablePrevent();
 	}
 	
 	@Inject
