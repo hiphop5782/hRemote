@@ -34,7 +34,7 @@ public class ClientProcess extends RemoteProcess{
 	
 	private ScreenManager manager;
 
-	private byte[] buffer = new byte[100 * 1024];
+	private byte[] buffer = new byte[1 * 1024 * 1024];
 	
 	private ObjectMapper readMapper = new ObjectMapper();
 	private ObjectMapper writeMapper = new ObjectMapper();
