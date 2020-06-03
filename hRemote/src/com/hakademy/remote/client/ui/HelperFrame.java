@@ -28,13 +28,12 @@ public class HelperFrame extends JFrame{
 	
 	private WindowFocusListener fListener = new WindowFocusListener() {
 		@Override
-		public void windowLostFocus(WindowEvent e) {
-			process.getKeyHook().stopHook();
-		}
-		
-		@Override
 		public void windowGainedFocus(WindowEvent e) {
-			process.getKeyHook().startHookAsEnablePrevent();
+			process.startHook();
+		}
+		@Override
+		public void windowLostFocus(WindowEvent e) {
+			process.stopHook();
 		}
 	};
 	

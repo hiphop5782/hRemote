@@ -21,6 +21,7 @@ import com.hakademy.utility.screen.ScreenManager;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import me.coley.simplejna.Keyboard;
 
 @Component
 @Data
@@ -137,17 +138,17 @@ public class ClientProcess extends RemoteProcess{
 	private KeyboardHook hook = KeyboardHook.getInstance();
 	private void keyboardTypeAction(DataFromHelper data) {
 		LogManager.info("receive typed = " + data.getKeyCode());
-		hook.keyType(data.getKeyCode());
+		Keyboard.pressKey(data.getKeyCode());
 	}
 	
 	private void keyboardReleaseAction(DataFromHelper data) {
 		LogManager.info("receive release = " + data.getKeyCode());
-		hook.keyPress(data.getKeyCode());
+		Keyboard.sendKeyUp(data.getKeyCode());
 	}
 	
 	private void keyboardPressAction(DataFromHelper data) {
 		LogManager.info("receive press = " + data.getKeyCode());
-		hook.keyRelease(data.getKeyCode());
+		Keyboard.sendKeyDown(data.getKeyCode());
 	}
 	
 	private void mouseMoveAction(DataFromHelper data) {

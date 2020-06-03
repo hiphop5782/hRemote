@@ -30,6 +30,10 @@ import com.sun.jna.platform.win32.WinUser.LowLevelKeyboardProc;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import me.coley.simplejna.hook.key.KeyEventReceiver;
+import me.coley.simplejna.hook.key.KeyHookManager;
+import me.coley.simplejna.hook.key.KeyEventReceiver.PressState;
+import me.coley.simplejna.hook.key.KeyEventReceiver.SystemState;
 
 /**
  * Helper(receiver) process 
@@ -43,21 +47,26 @@ public class HelperProcess extends RemoteProcess{
 	private int limit = 10 * 1024 * 1024;//1MB
 	private byte[] buffer = new byte[limit];
 	
-	@Getter
-	private KeyboardHook keyHook = KeyboardHook.getInstance();
-	private LowLevelKeyboardProc keyProc = (nCode, wParam, info)-> {
-//		System.out.println("global key detection. nCode = " + nCode+", wParam = "+wParam + ", info = "+info);
-//		System.out.println("keyCode = " + info.vkCode);
-		switch(wParam.intValue()) {
-		case KeyboardHook.KEY_PRESS:
-		case KeyboardHook.SYSKEY_PRESS:
-			sendKeyboardPressCommand(info.vkCode); break;
-		case KeyboardHook.KEY_RELEASE:
-		case KeyboardHook.SYSKEY_RELEASE:
-			sendKeyboardReleaseCommand(info.vkCode); break;
+	private KeyHookManager manager = new KeyHookManager();
+	private KeyEventReceiver receiver = new KeyEventReceiver(manager) {
+		@Override
+		public boolean onKeyUpdate(SystemState sysState, PressState pressState, int time, int vkCode) {
+			if(pressState == PressState.DOWN) {
+				sendKeyboardPressCommand(vkCode);
+			}
+			else if(pressState == PressState.UP){
+				sendKeyboardReleaseCommand(vkCode);
+			}
+			return false;
 		}
-		return null;
 	};
+	
+	public void startHook() {
+		manager.hook(receiver);
+	}
+	public void stopHook() {
+		manager.unhook(receiver);
+	}
 	
 	@Inject
 	private HelperMenu menu;
@@ -72,7 +81,6 @@ public class HelperProcess extends RemoteProcess{
 		this.out = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 		this.in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
 		this.setDaemon(true);
-		this.keyHook.setGlobalProcess(keyProc);
 		this.start();
 	}
 	

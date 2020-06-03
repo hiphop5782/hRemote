@@ -17,7 +17,6 @@ public class Test11_KeyHookTestWithSocket {
 		p.setHost("192.168.0.8");
 		p.setPort(36500);
 		p.connect();
-		p.getKeyHook().startHook();
 		Thread.currentThread().join();
 	}
 }
