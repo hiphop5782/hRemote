@@ -1,9 +1,7 @@
 package com.hakademy.remote.client.ui;
 
-import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
-import java.awt.event.WindowListener;
 import java.io.IOException;
 
 import javax.swing.JFrame;
@@ -42,7 +40,7 @@ public class HelperFrame extends JFrame{
 		setAlwaysOnTop(true);
 		setSize(500, 500);
 		setLocationByPlatform(true);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		addWindowFocusListener(fListener);
 	}
 	

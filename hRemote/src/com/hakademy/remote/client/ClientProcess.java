@@ -11,6 +11,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 
+import javax.swing.JOptionPane;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hakademy.remote.log.LogManager;
 import com.hakademy.remote.mapper.DataFromClient;
@@ -41,8 +43,8 @@ public class ClientProcess extends RemoteProcess{
 	
 	private Thread receiver;
 	private Runnable receiveAction = ()->{
-		while(liveFlag) {
-			try {
+		try {
+			while(liveFlag) {
 				int size = in.readInt();
 				in.readFully(buffer, 0, size);
 				
@@ -50,9 +52,10 @@ public class ClientProcess extends RemoteProcess{
 				DataFromHelper data = readMapper.readValue(buffer, DataFromHelper.class);
 				doSomething(data);
 			}
-			catch(Exception e) {
-				e.printStackTrace();
-			}
+		}
+		catch(Exception e) {
+			kill();
+			JOptionPane.showMessageDialog(null, "원격제어가 종료되었습니다");
 		}
 	};
 	
