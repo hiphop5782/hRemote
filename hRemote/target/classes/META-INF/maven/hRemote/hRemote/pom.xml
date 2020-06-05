@@ -1,0 +1,80 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>hRemote</groupId>
+	<artifactId>hRemote</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>remote-client</name>
+	<description>Hwang's Remote Control Application</description>
+	
+	<properties>
+		<java-version>10</java-version>
+		<jackson-version>2.11.0</jackson-version>
+		<jna-version>5.5.0</jna-version>
+		<project.lib.path>${project.basedir}/lib</project.lib.path>
+	</properties>
+	
+	<repositories>
+		<repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+	
+	<dependencies>
+		<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-databind</artifactId>
+		    <version>${jackson-version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-core</artifactId>
+		    <version>${jackson-version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-annotations</artifactId>
+		    <version>${jackson-version}</version>
+		</dependency>
+		
+		
+		<dependency>
+			<groupId>com.hakademy</groupId>
+			<artifactId>hUtility</artifactId>
+			<version>0.0.1</version>
+			<scope>system</scope>
+			<systemPath>${project.lib.path}/hUtility.jar</systemPath>
+		</dependency>
+		
+		<dependency>
+		    <groupId>com.github.Col-E</groupId>
+		    <artifactId>Simplified-JNA</artifactId>
+		    <version>1.0</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.projectlombok</groupId>
+		    <artifactId>lombok</artifactId>
+		    <version>1.18.8</version>
+		    <scope>provided</scope>
+		</dependency>
+				
+	</dependencies>
+	
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<testSourceDirectory>test</testSourceDirectory>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.7.0</version>
+				<configuration>
+					<source>${java-version}</source>
+					<target>${java-version}</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

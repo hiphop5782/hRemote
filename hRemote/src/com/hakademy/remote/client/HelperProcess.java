@@ -22,19 +22,13 @@ import com.hakademy.remote.handler.ScreenReceiveHandler;
 import com.hakademy.remote.log.LogManager;
 import com.hakademy.remote.mapper.DataFromClient;
 import com.hakademy.remote.mapper.DataFromHelper;
-import com.hakademy.utility.hook.KeyboardHook;
 import com.hakademy.utility.object.annotation.Component;
 import com.hakademy.utility.object.annotation.Inject;
-import com.sun.jna.platform.win32.User32;
-import com.sun.jna.platform.win32.WinUser.LowLevelKeyboardProc;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import me.coley.simplejna.hook.key.KeyEventReceiver;
 import me.coley.simplejna.hook.key.KeyHookManager;
-import me.coley.simplejna.hook.key.KeyEventReceiver.PressState;
-import me.coley.simplejna.hook.key.KeyEventReceiver.SystemState;
 
 /**
  * Helper(receiver) process 
