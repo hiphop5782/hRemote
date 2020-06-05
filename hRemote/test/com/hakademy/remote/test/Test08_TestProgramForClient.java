@@ -9,10 +9,14 @@ import com.hakademy.utility.object.InMemoryObjectLoader;
 public class Test08_TestProgramForClient {
 	public static void main(String[] args) throws InterruptedException, IllegalArgumentException, IllegalAccessException, IOException {
 		ClientProcess cp = HRemoteApplication.getBean(ClientProcess.class);
-		cp.setPort(36500);
 		cp.setFrame(30);
-		cp.connect();
+		if(cp.regist("tester")) {
+			cp.connect();
+			Thread.currentThread().join();
+		}
+		else {
+			System.out.println("regist failed");
+		}
 		
-		Thread.currentThread().join();
 	}
 }

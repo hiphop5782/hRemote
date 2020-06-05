@@ -6,14 +6,22 @@ import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.HttpRetryException;
+import java.net.HttpURLConnection;
 import java.net.ServerSocket;
+import java.net.URL;
 
 import javax.swing.JOptionPane;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hakademy.remote.entity.Client;
 import com.hakademy.remote.log.LogManager;
 import com.hakademy.remote.mapper.DataFromClient;
 import com.hakademy.remote.mapper.DataFromHelper;
@@ -31,7 +39,7 @@ import me.coley.simplejna.Keyboard;
 public class ClientProcess extends RemoteProcess{
 	private ServerSocket server;
 	
-	private int port, frame;
+	private int frame;
 	private int screen = ScreenManager.MAIN_MONITOR;
 	
 	private ScreenManager manager;
@@ -40,6 +48,8 @@ public class ClientProcess extends RemoteProcess{
 	
 	private ObjectMapper readMapper = new ObjectMapper();
 	private ObjectMapper writeMapper = new ObjectMapper();
+	
+	private Client client;
 	
 	private Thread receiver;
 	private Runnable receiveAction = ()->{
@@ -69,16 +79,57 @@ public class ClientProcess extends RemoteProcess{
 		catch(Exception e) {}
 	}
 	
+	/**
+	 * Remote Server에 Regist 데이터 전송하는 메소드
+	 * @throws IOException
+	 */
+	public boolean regist(String name) throws IOException{
+		URL url = new URL("http://localhost:5555/remote/");
+		HttpURLConnection connection = null;
+		
+		try{
+			connection = (HttpURLConnection)url.openConnection();
+			connection.setDoOutput(true);
+			connection.setDoInput(true);
+			connection.setRequestMethod("POST");
+			connection.setRequestProperty("Connection", "close");//강제종료(없으면 연결이 유지됨)
+			connection.setConnectTimeout(10000);
+			
+			PrintWriter out = new PrintWriter(new OutputStreamWriter(connection.getOutputStream(), "UTF-8"));
+			out.write("name="+name);
+			out.close();
+			
+			int code = connection.getResponseCode();
+			if(code == 200) {
+				BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+				ObjectMapper mapper = new ObjectMapper();
+				client = mapper.readValue(reader, Client.class);
+				LogManager.info(client.toString());
+				return true;
+			}
+			throw new HttpRetryException("서버 응답이 없습니다", code);
+		}
+		finally {
+			if(connection != null) {
+				connection.disconnect();
+				LogManager.info("연결 종료");
+			}
+		}
+	}
+	
 	public void connect() throws IOException {
-		this.server = new ServerSocket(port);
-		this.socket = server.accept();
-		this.out = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
-		this.in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
-		this.receiver = new Thread(receiveAction);
-		this.receiver.setDaemon(true);
-		this.receiver.start();
-		this.setDaemon(true);
-		this.start();
+		if(client != null) {
+			this.server = new ServerSocket(client.getPort());
+			this.socket = server.accept();
+			this.out = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+			this.in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+			this.receiver = new Thread(receiveAction);
+			this.receiver.setDaemon(true);
+			this.receiver.start();
+			this.setDaemon(true);
+			this.start();
+		}
+		throw new IOException("등록이 정상적으로 이루어지지 않았습니다");
 	}
 	
 	@Override

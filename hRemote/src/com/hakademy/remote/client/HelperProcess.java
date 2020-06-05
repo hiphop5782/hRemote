@@ -11,6 +11,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hakademy.remote.client.ui.HelperMenu;
@@ -110,6 +111,8 @@ public class HelperProcess extends RemoteProcess{
 		}
 		catch(IOException e) {
 			LogManager.error("명령 전송 오류", e);
+			JOptionPane.showMessageDialog(panel, "상대방이 연결을 종료했습니다");
+			System.exit(1);
 		}
 	}
 	public void sendKeyboardTypeCommand(int keyCode)  {
