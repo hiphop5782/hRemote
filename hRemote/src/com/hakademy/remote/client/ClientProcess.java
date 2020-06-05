@@ -129,7 +129,9 @@ public class ClientProcess extends RemoteProcess{
 			this.setDaemon(true);
 			this.start();
 		}
-		throw new IOException("등록이 정상적으로 이루어지지 않았습니다");
+		else{
+			throw new IOException("등록이 정상적으로 이루어지지 않았습니다");
+		}
 	}
 	
 	@Override

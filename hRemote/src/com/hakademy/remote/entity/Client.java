@@ -12,4 +12,5 @@ public class Client {
 	private int port;
 	private Timestamp ctime;
 	private Timestamp utime;
+	private boolean connectable;
 }

@@ -19,8 +19,4 @@ public class HRemoteApplication {
 			e.printStackTrace();
 		}
 	}
-	
-	public static void main(String[] args) {
-		
-	}
 }
