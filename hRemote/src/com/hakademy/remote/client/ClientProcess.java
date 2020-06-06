@@ -79,12 +79,14 @@ public class ClientProcess extends RemoteProcess{
 		catch(Exception e) {}
 	}
 	
+	public static final String serverUrl = "http://www.sysout.co.kr/remote/";
+	
 	/**
 	 * Remote Server에 Regist 데이터 전송하는 메소드
 	 * @throws IOException
 	 */
-	public boolean regist(String name) throws IOException{
-		URL url = new URL("http://localhost:5555/remote/");
+	public boolean regist() throws IOException{
+		URL url = new URL(serverUrl);
 		HttpURLConnection connection = null;
 		
 		try{
@@ -95,9 +97,9 @@ public class ClientProcess extends RemoteProcess{
 			connection.setRequestProperty("Connection", "close");//강제종료(없으면 연결이 유지됨)
 			connection.setConnectTimeout(10000);
 			
-			PrintWriter out = new PrintWriter(new OutputStreamWriter(connection.getOutputStream(), "UTF-8"));
-			out.write("name="+name);
-			out.close();
+//			PrintWriter out = new PrintWriter(new OutputStreamWriter(connection.getOutputStream(), "UTF-8"));
+//			out.write("name="+name);
+//			out.close();
 			
 			int code = connection.getResponseCode();
 			if(code == 200) {
@@ -113,6 +115,43 @@ public class ClientProcess extends RemoteProcess{
 			if(connection != null) {
 				connection.disconnect();
 				LogManager.info("연결 종료");
+			}
+		}
+	}
+	
+	public void changeState(boolean connectable) throws IOException {
+		if(client == null) return;
+		
+		client.setConnectable(connectable);
+		
+		HttpURLConnection connection = null;
+		try {
+			URL url = new URL(serverUrl);
+			connection = (HttpURLConnection)url.openConnection();
+			
+			connection.setDoInput(true);
+			connection.setDoOutput(true);
+			connection.setConnectTimeout(10000);
+			connection.setRequestProperty("Connection", "close");
+			connection.setRequestProperty("Accept", "*/*");
+			connection.setRequestProperty("Content-Type", "application/json");
+			connection.setRequestMethod("PUT");
+			
+			ObjectMapper mapper = new ObjectMapper();
+			PrintWriter out = new PrintWriter(new OutputStreamWriter(connection.getOutputStream(), "UTF-8"));
+			out.write(mapper.writeValueAsString(client));
+			out.flush();
+			
+			int code = connection.getResponseCode();
+			if(code != 200) {
+				BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+				client = mapper.readValue(reader, Client.class);
+				reader.close();
+			}
+		}
+		finally {
+			if(connection != null) {
+				connection.disconnect();
 			}
 		}
 	}

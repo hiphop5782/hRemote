@@ -28,6 +28,6 @@ public class Test14_PunchingHoleTest {
 //		connection.disconnect();
 		
 		ClientProcess cp = HRemoteApplication.getBean(ClientProcess.class);
-		System.out.println(cp.regist("test"));
+		System.out.println(cp.regist());
 	}
 }

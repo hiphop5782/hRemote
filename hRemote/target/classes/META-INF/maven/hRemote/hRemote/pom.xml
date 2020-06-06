@@ -65,6 +65,13 @@
 		    <version>1.18.8</version>
 		    <scope>provided</scope>
 		</dependency>
+		
+		<dependency>
+		    <groupId>com.jtattoo</groupId>
+		    <artifactId>JTattoo</artifactId>
+		    <version>1.6.7</version>
+		</dependency>
+				
 				
 	</dependencies>
 	

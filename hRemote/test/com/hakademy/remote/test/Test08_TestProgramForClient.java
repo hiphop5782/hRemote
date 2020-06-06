@@ -10,7 +10,7 @@ public class Test08_TestProgramForClient {
 	public static void main(String[] args) throws InterruptedException, IllegalArgumentException, IllegalAccessException, IOException {
 		ClientProcess cp = HRemoteApplication.getBean(ClientProcess.class);
 		cp.setFrame(30);
-		if(cp.regist("tester")) {
+		if(cp.regist()) {
 			cp.connect();
 			Thread.currentThread().join();
 		}
