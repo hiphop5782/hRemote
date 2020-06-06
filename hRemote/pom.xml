@@ -4,15 +4,17 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>hRemote</groupId>
 	<artifactId>hRemote</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>remote-client</name>
 	<description>Hwang's Remote Control Application</description>
 	
 	<properties>
-		<java-version>10</java-version>
+		<java-version>1.8</java-version>
 		<jackson-version>2.11.0</jackson-version>
 		<jna-version>5.5.0</jna-version>
 		<project.lib.path>${project.basedir}/lib</project.lib.path>
+		<jar-name>HRemote</jar-name>
+		<deploy.target.dir>D:/remote</deploy.target.dir>
 	</properties>
 	
 	<repositories>
@@ -39,12 +41,6 @@
 		    <version>${jackson-version}</version>
 		</dependency>
 		
-        <dependency>
-		   <groupId>com.seaglasslookandfeel</groupId>
-		   <artifactId>seaglasslookandfeel</artifactId>
-		   <version>0.2.1</version>
-		</dependency>
-
 		<dependency>
 			<groupId>com.hakademy</groupId>
 			<artifactId>hUtility</artifactId>
@@ -71,7 +67,12 @@
 		    <artifactId>JTattoo</artifactId>
 		    <version>1.6.7</version>
 		</dependency>
-				
+		
+		<dependency>
+		    <groupId>commons-codec</groupId>
+		    <artifactId>commons-codec</artifactId>
+		    <version>1.9</version>
+		</dependency>
 				
 	</dependencies>
 	
@@ -85,6 +86,48 @@
 				<configuration>
 					<source>${java-version}</source>
 					<target>${java-version}</target>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.2</version>
+				
+				<configuration>
+					<finalName>${jar.name}</finalName>
+					<outputDirectory>${deploy.target.dir}</outputDirectory>
+					<archive>
+						<manifest>
+							<mainClass>com.hakademy.remote.HRemoteClientApplication</mainClass>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib/</classpathPrefix>
+						</manifest>
+						<manifestEntries>
+							<Class-Path>.</Class-Path>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.3</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<outputDirectory>${deploy.target.dir}/lib</outputDirectory>
+					<overWriteIfNewer>true</overWriteIfNewer>
+					<overWriteReleases>false</overWriteReleases>
+					<overWriteSnapshots>false</overWriteSnapshots>
 				</configuration>
 			</plugin>
 		</plugins>

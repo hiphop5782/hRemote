@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class Client {
-	private long no;
+	private String no;
 	private String name;
 	private String ip;
 	private int port;

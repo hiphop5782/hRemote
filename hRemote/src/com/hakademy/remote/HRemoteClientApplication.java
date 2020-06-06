@@ -14,6 +14,7 @@ public class HRemoteClientApplication {
 			frame.start();
 		}
 		catch(Exception e) {
+			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "오류가 발생했습니다 : "+e.getMessage(), "연결 오류", JOptionPane.PLAIN_MESSAGE);
 		}
 	}
