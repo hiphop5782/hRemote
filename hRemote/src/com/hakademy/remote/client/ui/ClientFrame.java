@@ -2,8 +2,12 @@ package com.hakademy.remote.client.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -37,7 +41,10 @@ public class ClientFrame extends JFrame{
 			public void windowClosing(WindowEvent arg0) {
 				int choice = JOptionPane.showConfirmDialog(ClientFrame.this, "종료하시겠습니까?", "종료 확인", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
 				if(choice == JOptionPane.YES_OPTION) {
-					changeState(false);
+					try {
+						changeState(false);
+					}
+					catch(Exception e) {}
 					process.kill();
 					System.exit(0);
 				}
@@ -58,30 +65,58 @@ public class ClientFrame extends JFrame{
 		button.setPreferredSize(new Dimension(80, 80));
 		button.setFont(new Font("", Font.PLAIN, 25));
 		button.addActionListener(e->{
-			changeState(button.isSelected());
+			try {
+				changeState(button.isSelected());
+			}
+			catch(Exception err) {}
 		});
 		changeButtonState(false);
 		panel.add(button, BorderLayout.EAST);
 		panel.add(label);
 		label.setBorder(null);
 		label.setFont(new Font("", Font.BOLD, 25));
+		label.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		
+//		라벨 클릭 시 복사
 		label.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mousePressed(MouseEvent e) {
-				x = e.getX();
-				y = e.getY();
+			public void mouseEntered(MouseEvent e) {
+				label.setText("클릭하여 복사");
 			}
-		});
-		label.addMouseMotionListener(new MouseMotionAdapter() {
 			@Override
-			public void mouseDragged(MouseEvent e) {
-				int xgap = e.getX() - x;
-				int ygap = e.getY() - y;
-				int xLoc = getLocationOnScreen().x + xgap;
-				int yLoc = getLocationOnScreen().y + ygap;
-				setLocation(xLoc, yLoc);
+			public void mouseExited(MouseEvent e) {
+				label.setText("<html><body><center>공유코드<br>"+process.getClient().getNo()+"</center></body></html>");
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+				String copyString = process.getClient().getNo();
+				if(copyString != null){
+				     StringSelection contents = new StringSelection(copyString);
+				     clipboard.setContents(contents, null);
+				     label.setText("복사 완료!");
+				}
 			}
 		});
+		
+//		label 클릭으로 이동이 가능하도록 하는 설정
+//		label.addMouseListener(new MouseAdapter() {
+//			@Override
+//			public void mousePressed(MouseEvent e) {
+//				x = e.getX();
+//				y = e.getY();
+//			}
+//		});
+//		label.addMouseMotionListener(new MouseMotionAdapter() {
+//			@Override
+//			public void mouseDragged(MouseEvent e) {
+//				int xgap = e.getX() - x;
+//				int ygap = e.getY() - y;
+//				int xLoc = getLocationOnScreen().x + xgap;
+//				int yLoc = getLocationOnScreen().y + ygap;
+//				setLocation(xLoc, yLoc);
+//			}
+//		});
 	}
 	
 	public void start() throws IOException {
@@ -90,15 +125,9 @@ public class ClientFrame extends JFrame{
 		pack();
 		setVisible(true);
 	}
-	private void changeState(boolean connectable) {
-		try {
-			process.changeState(connectable);
-			changeButtonState(connectable);
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(ClientFrame.this, "통신 오류", "오류", JOptionPane.PLAIN_MESSAGE);
-		}
+	private void changeState(boolean connectable) throws IOException {
+		process.changeState(connectable);
+		changeButtonState(connectable);
 	}
 	private void changeButtonState(boolean selected) {
 		if(selected) {
