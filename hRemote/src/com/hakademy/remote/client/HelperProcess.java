@@ -47,8 +47,6 @@ import me.coley.simplejna.hook.key.KeyHookManager;
 @Data
 @EqualsAndHashCode(callSuper=false)
 public class HelperProcess extends RemoteProcess{
-	private String host;
-	private int port;
 	private int limit = 10 * 1024 * 1024;//1MB
 	private byte[] buffer = new byte[limit];
 	
@@ -93,10 +91,11 @@ public class HelperProcess extends RemoteProcess{
 	private HelperPanel panel;
 	
 	private Client client;
-	public static final String serverUrl = "http://www.sysout.co.kr/remote/find/";
-//	public static final String serverUrl = "http://localhost:5555/remote/find/";
+//	public static final String serverUrl = "http://www.sysout.co.kr/remote/find/";
+	public static final String serverUrl = "http://localhost:5555/remote/find/";
 	public void findClient(String clientSecret) throws IOException {
 		URL url = new URL(serverUrl + URLEncoder.encode(clientSecret, "UTF-8"));
+		System.out.println(url.toExternalForm());
 		HttpURLConnection connection = null;
 		try {
 			connection = (HttpURLConnection)url.openConnection();
@@ -105,6 +104,7 @@ public class HelperProcess extends RemoteProcess{
 			connection.setDefaultUseCaches(false);
 			connection.setRequestMethod("GET");
 			connection.setRequestProperty("Connection", "close");
+			connection.addRequestProperty("Accept", "*/*");
 			connection.setDoInput(true);
 			connection.setDoOutput(true);
 			
@@ -114,7 +114,7 @@ public class HelperProcess extends RemoteProcess{
 			
 			int code = connection.getResponseCode();
 			if(code != 200) {
-				throw new HttpRetryException("서버가 응답하지 않습니다", code);
+				throw new HttpRetryException("서버 응답 오류 : "+code, code);
 			}
 			
 			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
@@ -132,6 +132,10 @@ public class HelperProcess extends RemoteProcess{
 	public HelperProcess() {}
 	
 	public void connect() throws UnknownHostException, IOException {
+		connect(client.getIp(), client.getPort());
+	}
+	
+	public void connect(String host, int port) throws UnknownHostException, IOException {
 		this.socket = new Socket(host, port);
 		this.out = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 		this.in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));

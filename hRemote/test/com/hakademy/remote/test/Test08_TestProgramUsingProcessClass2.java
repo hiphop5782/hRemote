@@ -12,8 +12,6 @@ public class Test08_TestProgramUsingProcessClass2 {
 	public static void main(String[] args) throws IllegalArgumentException, IllegalAccessException, IOException, InterruptedException {
 		HelperPanel p = HRemoteApplication.getBean(HelperPanel.class);
 		HelperProcess proc = HRemoteApplication.getBean(HelperProcess.class);
-		proc.setHost("localhost");
-		proc.setPort(36500);
 		JFrame fr = new JFrame();
 		fr.setAlwaysOnTop(true);
 		fr.setSize(500, 500);

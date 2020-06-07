@@ -61,13 +61,11 @@ public class HelperFrame extends JFrame{
 	
 	public void start(String clientSecret) throws IOException{
 		process.findClient(clientSecret);
-		start(process.getClient().getIp(), process.getClient().getPort());
+		panel.connect();
 	}
 	
 	public void start(String host, int port) throws IOException {
-		panel.getProcess().setHost(host);
-		panel.getProcess().setPort(port);
-		panel.connect(); 
+		panel.connect(host, port); 
 	}
 	
 }

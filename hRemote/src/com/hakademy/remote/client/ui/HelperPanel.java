@@ -91,14 +91,21 @@ public class HelperPanel extends JPanel{
 	public HelperPanel() {}
 	
 	public void connect() throws UnknownHostException, IOException {
-//		this.process.setHost("localhost");
-//		this.process.setPort(36500);
-		this.addMouseListener(mListener);
-		this.addMouseMotionListener(moListener);
-//		frame.addKeyListener(kListener);
 		this.process.setImageHandler(imageHandler);
 		this.process.setInfoHandler(infoHandler);
 		this.process.connect();
+		this.addMouseListener(mListener);
+		this.addMouseMotionListener(moListener);
+//		frame.addKeyListener(kListener);
+	}
+	
+	public void connect(String host, int port) throws UnknownHostException, IOException {
+		this.process.setImageHandler(imageHandler);
+		this.process.setInfoHandler(infoHandler);
+		this.process.connect(host, port);
+		this.addMouseListener(mListener);
+		this.addMouseMotionListener(moListener);
+//		frame.addKeyListener(kListener);
 	}
 	
 	public void draw(BufferedImage image) {
