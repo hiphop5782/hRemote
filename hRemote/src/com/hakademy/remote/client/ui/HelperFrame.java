@@ -10,6 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hakademy.remote.client.HelperProcess;
@@ -31,8 +32,6 @@ public class HelperFrame extends JFrame{
 	@Inject
 	private HelperProcess process;
 	
-	private Client client;
-	
 	private WindowFocusListener fListener = new WindowFocusListener() {
 		@Override
 		public void windowGainedFocus(WindowEvent e) {
@@ -46,50 +45,29 @@ public class HelperFrame extends JFrame{
 	
 	public HelperFrame() {
 		setTitle("H-Remote");
-		setAlwaysOnTop(true);
 		setSize(500, 500);
 		setLocationByPlatform(true);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		addWindowFocusListener(fListener);
 	}
 	
-	public void start(long client) throws IOException{
-		URL url = new URL("http://localhost:5555/remote/?client="+client);
-		HttpURLConnection connection = null;
-		try {
-			connection = (HttpURLConnection)url.openConnection();
-			
-			connection.setConnectTimeout(10000);//timeout
-			connection.setDefaultUseCaches(false);
-			connection.setRequestProperty("Connection", "close");
-			connection.setDoInput(true);
-			
-			int code = connection.getResponseCode();
-			if(code != 200) {
-				throw new HttpRetryException("서버가 응답하지 않습니다", code);
-			}
-			
-			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
-			ObjectMapper mapper = new ObjectMapper();
-			this.client = mapper.readValue(reader, Client.class);
-			reader.close();
-			
-			start(this.client.getIp(), this.client.getPort());
-		}
-		finally {
-			if(connection != null) {
-				connection.disconnect();
-			}
-		}
-	}
-	
-	public void start(String host, int port) throws IOException {
+	public void display() throws IOException {
 		setContentPane(panel);
 		setJMenuBar(menu);
 		setVisible(true);
+		String clientSecret = JOptionPane.showInputDialog(panel, "Client Secret 입력", "Client 설정", JOptionPane.PLAIN_MESSAGE);
+		start(clientSecret);
+	}
+	
+	public void start(String clientSecret) throws IOException{
+		process.findClient(clientSecret);
+		start(process.getClient().getIp(), process.getClient().getPort());
+	}
+	
+	public void start(String host, int port) throws IOException {
 		panel.getProcess().setHost(host);
 		panel.getProcess().setPort(port);
-		panel.connect();
+		panel.connect(); 
 	}
 	
 }

@@ -21,13 +21,16 @@ import java.net.URL;
 import javax.swing.JOptionPane;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hakademy.remote.client.ui.HelperFrame;
 import com.hakademy.remote.entity.Client;
 import com.hakademy.remote.log.LogManager;
 import com.hakademy.remote.mapper.DataFromClient;
 import com.hakademy.remote.mapper.DataFromHelper;
 import com.hakademy.utility.hook.KeyboardHook;
 import com.hakademy.utility.object.annotation.Component;
+import com.hakademy.utility.object.annotation.Inject;
 import com.hakademy.utility.screen.ScreenManager;
+import com.hakademy.utility.ui.DialogManager;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -51,6 +54,9 @@ public class ClientProcess extends RemoteProcess{
 	
 	private Client client;
 	
+	@Inject
+	private HelperFrame helperFrame;
+	
 	private Thread receiver;
 	private Runnable receiveAction = ()->{
 		try {
@@ -66,6 +72,11 @@ public class ClientProcess extends RemoteProcess{
 		catch(Exception e) {
 			kill();
 			JOptionPane.showMessageDialog(null, "원격제어가 종료되었습니다");
+			try{
+				connect();
+			}catch(Exception err) {
+				DialogManager.alert(helperFrame, "오류 발생 : "+e.getMessage());
+			};
 		}
 	};
 	
@@ -80,6 +91,7 @@ public class ClientProcess extends RemoteProcess{
 	}
 	
 	public static final String serverUrl = "http://www.sysout.co.kr/remote/";
+//	public static final String serverUrl = "http://localhost:5555/remote/";
 	
 	/**
 	 * Remote Server에 Regist 데이터 전송하는 메소드

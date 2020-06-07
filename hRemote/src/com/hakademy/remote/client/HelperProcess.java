@@ -3,11 +3,20 @@ package com.hakademy.remote.client;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.HttpRetryException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.Socket;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.net.UnknownHostException;
 
 import javax.imageio.ImageIO;
@@ -17,6 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hakademy.remote.client.ui.HelperMenu;
 import com.hakademy.remote.client.ui.HelperPanel;
 import com.hakademy.remote.command.CommandHeader;
+import com.hakademy.remote.entity.Client;
 import com.hakademy.remote.handler.ScreenInformationHandler;
 import com.hakademy.remote.handler.ScreenReceiveHandler;
 import com.hakademy.remote.log.LogManager;
@@ -81,6 +91,43 @@ public class HelperProcess extends RemoteProcess{
 	
 	@Inject
 	private HelperPanel panel;
+	
+	private Client client;
+	public static final String serverUrl = "http://www.sysout.co.kr/remote/find/";
+//	public static final String serverUrl = "http://localhost:5555/remote/find/";
+	public void findClient(String clientSecret) throws IOException {
+		URL url = new URL(serverUrl + URLEncoder.encode(clientSecret, "UTF-8"));
+		HttpURLConnection connection = null;
+		try {
+			connection = (HttpURLConnection)url.openConnection();
+			
+			connection.setConnectTimeout(10000);//timeout
+			connection.setDefaultUseCaches(false);
+			connection.setRequestMethod("GET");
+			connection.setRequestProperty("Connection", "close");
+			connection.setDoInput(true);
+			connection.setDoOutput(true);
+			
+//			PrintWriter out = new PrintWriter(new OutputStreamWriter(connection.getOutputStream(), "UTF-8"));
+//			out.write(clientSecret);
+//			out.flush();
+			
+			int code = connection.getResponseCode();
+			if(code != 200) {
+				throw new HttpRetryException("서버가 응답하지 않습니다", code);
+			}
+			
+			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+			ObjectMapper mapper = new ObjectMapper();
+			this.client = mapper.readValue(reader, Client.class);
+			reader.close();
+		}
+		finally {
+			if(connection != null) {
+				connection.disconnect();
+			}
+		}
+	}
 	
 	public HelperProcess() {}
 	

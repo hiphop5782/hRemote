@@ -7,7 +7,6 @@ import lombok.Data;
 @Data
 public class Client {
 	private String no;
-	private String name;
 	private String ip;
 	private int port;
 	private Timestamp ctime;

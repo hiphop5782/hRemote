@@ -5,16 +5,20 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -50,9 +54,15 @@ public class ClientFrame extends JFrame{
 				}
 			}
 		});
+		try {
+			List<Image> icons = new ArrayList<>();
+			icons.add(ImageIO.read(new File("image", "icon16x16.ico")));
+			icons.add(ImageIO.read(new File("image", "icon32x32.ico")));
+			setIconImages(icons);
+		}
+		catch(Exception e) {/* pass */}
 		setAlwaysOnTop(true);
 		setResizable(false);
-		setUndecorated(true);
 		prepare();
 	}
 	
